@@ -21,7 +21,7 @@ export default function EventPhotoGallery() {
   const [photos, setPhotos] = useState<Photo[]>([
     {
       id: "1",
-      url: "/happy-people-at-party-with-colorful-lights.png",
+      url: "/v0-qr-photo-upload/happy-people-at-party-with-colorful-lights.png",
       title: "Opening Ceremony",
       uploadedBy: "Sarah M.",
       uploadedAt: new Date("2024-01-15T10:30:00"),
@@ -29,7 +29,7 @@ export default function EventPhotoGallery() {
     },
     {
       id: "2",
-      url: "/group-selfie-at-outdoor-event-with-sunset.png",
+      url: "/v0-qr-photo-upload/group-selfie-at-outdoor-event-with-sunset.png",
       title: "Sunset Vibes",
       uploadedBy: "Mike R.",
       uploadedAt: new Date("2024-01-15T18:45:00"),
@@ -37,7 +37,7 @@ export default function EventPhotoGallery() {
     },
     {
       id: "3",
-      url: "/food-table-at-celebration-with-decorations.png",
+      url: "/v0-qr-photo-upload/food-table-at-celebration-with-decorations.png",
       title: "Delicious Spread",
       uploadedBy: "Emma L.",
       uploadedAt: new Date("2024-01-15T12:15:00"),
@@ -78,7 +78,7 @@ export default function EventPhotoGallery() {
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-background">
       {/* Hero Section */}
       <div className="relative overflow-hidden bg-gradient-to-r from-primary/10 via-accent/5 to-primary/10">
-        <div className="absolute inset-0 bg-[url('/celebration-confetti-pattern.png')] opacity-5"></div>
+        <div className="absolute inset-0 bg-[url('/v0-qr-photo-upload/celebration-confetti-pattern.png')] opacity-5"></div>
         <div className="relative container mx-auto px-4 py-16 text-center">
           <div className="flex items-center justify-center gap-2 mb-4">
             <Sparkles className="h-8 w-8 text-primary animate-pulse" />

@@ -1,30 +1,37 @@
-# QR photo upload
+# Event Photo Gallery
 
-*Automatically synced with your [v0.app](https://v0.app) deployments*
+A beautiful, mobile-friendly photo sharing site for events. Perfect for QR code access!
 
-[![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=for-the-badge&logo=vercel)](https://vercel.com/stratakisdev-gmailcoms-projects/v0-qr-photo-upload)
-[![Built with v0](https://img.shields.io/badge/Built%20with-v0.app-black?style=for-the-badge)](https://v0.app/chat/projects/5jYsiyWCf27)
+## Features
+- 📸 Easy photo uploads
+- 🖼️ Beautiful gallery display
+- 📱 Mobile-optimized for QR code scanning
+- 🎨 Celebratory design with warm colors
+- ❤️ Like and share functionality
 
-## Overview
+## GitHub Pages Deployment
 
-This repository will stay in sync with your deployed chats on [v0.app](https://v0.app).
-Any changes you make to your deployed app will be automatically pushed to this repository from [v0.app](https://v0.app).
+This site is configured to automatically deploy to GitHub Pages when you push to the main branch.
 
-## Deployment
+### Setup Instructions:
+1. Go to your repository Settings → Pages
+2. Set Source to "GitHub Actions"
+3. The workflow will automatically build and deploy your site
 
-Your project is live at:
+Your site will be available at: `https://yourusername.github.io/v0-qr-photo-upload`
 
-**[https://vercel.com/stratakisdev-gmailcoms-projects/v0-qr-photo-upload](https://vercel.com/stratakisdev-gmailcoms-projects/v0-qr-photo-upload)**
+## Cloudinary Integration
 
-## Build your app
+To enable photo uploads:
+1. Create a free Cloudinary account
+2. Set up an unsigned upload preset
+3. Update the upload component with your credentials
 
-Continue building your app on:
+## Local Development
 
-**[https://v0.app/chat/projects/5jYsiyWCf27](https://v0.app/chat/projects/5jYsiyWCf27)**
+\`\`\`bash
+npm install
+npm run dev
+\`\`\`
 
-## How It Works
-
-1. Create and modify your project using [v0.app](https://v0.app)
-2. Deploy your chats from the v0 interface
-3. Changes are automatically pushed to this repository
-4. Vercel deploys the latest version from this repository
+Open [http://localhost:3000](http://localhost:3000) to view the site.

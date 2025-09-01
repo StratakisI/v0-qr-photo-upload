@@ -2,15 +2,17 @@
 
 import type React from "react"
 
-import { useState, useRef } from "react"
+import { useState, useRef, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { CloudinaryUpload } from "@/components/cloudinary-upload"
 import { Camera, Upload, Heart, Share2, Download, Users, Sparkles } from "lucide-react"
 
 interface Photo {
   id: string
   url: string
+  publicId?: string
   title: string
   uploadedBy: string
   uploadedAt: Date
@@ -49,23 +51,60 @@ export default function EventPhotoGallery() {
   const [isUploading, setIsUploading] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
+  useEffect(() => {
+    const savedPhotos = localStorage.getItem("event-photos")
+    if (savedPhotos) {
+      try {
+        const parsedPhotos = JSON.parse(savedPhotos).map((photo: any) => ({
+          ...photo,
+          uploadedAt: new Date(photo.uploadedAt),
+        }))
+        setPhotos((prev) => [...parsedPhotos, ...prev.filter((p) => p.id === "1" || p.id === "2" || p.id === "3")])
+      } catch (error) {
+        console.error("Failed to load saved photos:", error)
+      }
+    }
+  }, [])
+
+  useEffect(() => {
+    const userPhotos = photos.filter((photo) => !["1", "2", "3"].includes(photo.id))
+    if (userPhotos.length > 0) {
+      localStorage.setItem("event-photos", JSON.stringify(userPhotos))
+    }
+  }, [photos])
+
+  const handleCloudinaryUpload = (url: string, publicId: string) => {
+    const newPhoto: Photo = {
+      id: publicId,
+      url: url,
+      publicId: publicId,
+      title: `Photo ${Date.now()}`,
+      uploadedBy: "You",
+      uploadedAt: new Date(),
+      likes: 0,
+    }
+    setPhotos((prev) => [newPhoto, ...prev])
+    setIsUploading(false)
+  }
+
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
     if (!file) return
 
     setIsUploading(true)
 
-    // Simulate upload to Cloudinary
+    const tempPhoto: Photo = {
+      id: `temp-${Date.now()}`,
+      url: URL.createObjectURL(file),
+      title: file.name.split(".")[0],
+      uploadedBy: "You (uploading...)",
+      uploadedAt: new Date(),
+      likes: 0,
+    }
+    setPhotos((prev) => [tempPhoto, ...prev])
+
+    // Note: This is still a fallback - users should use the Cloudinary upload button
     setTimeout(() => {
-      const newPhoto: Photo = {
-        id: Date.now().toString(),
-        url: URL.createObjectURL(file),
-        title: file.name.split(".")[0],
-        uploadedBy: "You",
-        uploadedAt: new Date(),
-        likes: 0,
-      }
-      setPhotos((prev) => [newPhoto, ...prev])
       setIsUploading(false)
     }, 2000)
   }
@@ -92,20 +131,25 @@ export default function EventPhotoGallery() {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <Button
-              size="lg"
-              className="text-lg px-8 py-6 shadow-lg hover:shadow-xl transition-all duration-300"
-              onClick={() => fileInputRef.current?.click()}
-              disabled={isUploading}
-            >
-              <Camera className="mr-2 h-5 w-5" />
-              {isUploading ? "Uploading..." : "Upload Photo"}
-            </Button>
+            <CloudinaryUpload onUpload={handleCloudinaryUpload} disabled={isUploading} />
 
             <div className="flex items-center gap-2 text-muted-foreground">
               <Users className="h-4 w-4" />
               <span>{photos.length} photos shared</span>
             </div>
+          </div>
+
+          <div className="mt-4">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => fileInputRef.current?.click()}
+              disabled={isUploading}
+              className="text-sm"
+            >
+              <Camera className="mr-2 h-4 w-4" />
+              {isUploading ? "Uploading..." : "Or upload from device"}
+            </Button>
           </div>
 
           <input ref={fileInputRef} type="file" accept="image/*" onChange={handleFileUpload} className="hidden" />
@@ -117,16 +161,9 @@ export default function EventPhotoGallery() {
         <Card className="border-2 border-dashed border-primary/30 bg-gradient-to-r from-primary/5 to-accent/5 hover:border-primary/50 transition-colors duration-300">
           <CardContent className="p-8 text-center">
             <Upload className="h-12 w-12 text-primary mx-auto mb-4" />
-            <h3 className="text-xl font-semibold mb-2">Quick Upload</h3>
-            <p className="text-muted-foreground mb-4">Drag and drop your photos here or click to browse</p>
-            <Button
-              variant="outline"
-              onClick={() => fileInputRef.current?.click()}
-              disabled={isUploading}
-              className="border-primary/50 hover:bg-primary/10"
-            >
-              Choose Files
-            </Button>
+            <h3 className="text-xl font-semibold mb-2">Quick Upload to Cloudinary</h3>
+            <p className="text-muted-foreground mb-4">Upload your photos directly to the cloud for permanent storage</p>
+            <CloudinaryUpload onUpload={handleCloudinaryUpload} disabled={isUploading} />
           </CardContent>
         </Card>
       </div>
@@ -158,6 +195,11 @@ export default function EventPhotoGallery() {
                   <h3 className="font-semibold text-sm mb-1">{photo.title}</h3>
                   <p className="text-xs text-white/80">by {photo.uploadedBy}</p>
                 </div>
+                {photo.publicId && (
+                  <div className="absolute top-2 right-2 bg-green-500 text-white text-xs px-2 py-1 rounded">
+                    ☁️ Saved
+                  </div>
+                )}
               </div>
               <CardContent className="p-4">
                 <div className="flex items-center justify-between">

@@ -1,8 +1,8 @@
 {
   "name": "my-v0-project",
   "version": "0.1.0",
-  "homepage": "https://stratakisi.github.io/v0-qr-photo-upload/",
   "private": true,
+  "homepage": "https://stratakisi.github.io/v0-qr-photo-upload/",
   "scripts": {
     "build": "next build",
     "postbuild": "node -e \"require('fs').writeFileSync('out/.nojekyll', '')\"",

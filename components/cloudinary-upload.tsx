@@ -48,6 +48,7 @@ export function CloudinaryUpload({ onUpload, disabled }: CloudinaryUploadProps) 
         context: {
           caption: "Event photo upload",
         },
+        eager: [{ width: 800, height: 600, crop: "limit", quality: "auto" }],
       },
       (error: any, result: any) => {
         if (error) {

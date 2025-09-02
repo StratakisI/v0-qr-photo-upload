@@ -52,18 +52,48 @@ export default function EventPhotoGallery() {
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
-    const savedPhotos = localStorage.getItem("event-photos")
-    if (savedPhotos) {
+    const loadPhotos = async () => {
+      // Load from localStorage first
+      const savedPhotos = localStorage.getItem("event-photos")
+      if (savedPhotos) {
+        try {
+          const parsedPhotos = JSON.parse(savedPhotos).map((photo: any) => ({
+            ...photo,
+            uploadedAt: new Date(photo.uploadedAt),
+          }))
+          setPhotos((prev) => [...parsedPhotos, ...prev.filter((p) => p.id === "1" || p.id === "2" || p.id === "3")])
+        } catch (error) {
+          console.error("Failed to load saved photos:", error)
+        }
+      }
+
+      // Fetch photos from Cloudinary
       try {
-        const parsedPhotos = JSON.parse(savedPhotos).map((photo: any) => ({
-          ...photo,
-          uploadedAt: new Date(photo.uploadedAt),
-        }))
-        setPhotos((prev) => [...parsedPhotos, ...prev.filter((p) => p.id === "1" || p.id === "2" || p.id === "3")])
+        const response = await fetch(`https://res.cloudinary.com/dhaoitlbq/image/list/event.json`)
+        if (response.ok) {
+          const data = await response.json()
+          const cloudinaryPhotos: Photo[] = data.resources.map((resource: any) => ({
+            id: resource.public_id,
+            url: resource.secure_url,
+            publicId: resource.public_id,
+            title: resource.context?.caption || `Photo ${resource.public_id.split("/").pop()}`,
+            uploadedBy: "Event Guest",
+            uploadedAt: new Date(resource.created_at),
+            likes: 0,
+          }))
+
+          setPhotos((prev) => {
+            const existingIds = new Set(prev.map((p) => p.id))
+            const newPhotos = cloudinaryPhotos.filter((p) => !existingIds.has(p.id))
+            return [...newPhotos, ...prev]
+          })
+        }
       } catch (error) {
-        console.error("Failed to load saved photos:", error)
+        console.error("Failed to fetch photos from Cloudinary:", error)
       }
     }
+
+    loadPhotos()
   }, [])
 
   useEffect(() => {
